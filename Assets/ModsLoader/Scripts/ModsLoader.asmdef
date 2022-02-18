@@ -1,0 +1,18 @@
+{
+    "name": "ModsLoader",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Unity.Plastic.Newtonsoft.Json.dll",
+        "Mono.Cecil.dll",
+        "ICSharpCode.SharpZipLib.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
