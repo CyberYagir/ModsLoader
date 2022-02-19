@@ -68,6 +68,7 @@ public class ModDataObjectEditor : Editor
         
         
         EditorGUILayout.PropertyField(serializedObject.FindProperty("initializers").FindPropertyRelative("scripts"), true);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("prefabs"), true);
 
         List<string> classNames = new List<string>();
         for (int i = 0; i < mod.initializers.scripts.Count; i++)

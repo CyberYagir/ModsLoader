@@ -12,7 +12,7 @@ public class Mod
     public AssetBundle bundle { get; private set; }
     public AssetBundle scenesBundle { get; private set; }
 
-    public Assembly assembly;
+    public Assembly assembly { get; private set; }
     
     
     private List<string> scenes = new List<string>();
@@ -32,8 +32,12 @@ public class Mod
         if (assembly != null)
         {
             AddLoader();
-            AddLoader();
         }
+    }
+
+    public string GetAssetName(string assetName)
+    {
+        return assetName + "$" + data.modName;
     }
     
     public int GetScenesCount => scenes.Count;
@@ -46,12 +50,23 @@ public class Mod
         SceneManager.LoadScene(scenes[id]);
     }
 
-    public void AddLoader()
+    public Object GetAsset(string assetNameWithoutModName)
+    {
+        return bundle.LoadAsset(GetAssetName(assetNameWithoutModName));
+    }
+    
+    private void AddLoader()
     {
         var holder = new GameObject(data.modName);
         foreach (var t in data.initializers.namedScripts)
         {
-            holder.AddComponent(assembly.GetType((string)t));
+            var component = holder.AddComponent(assembly.GetType((string)t));
+            var init = component as ModInit;
+            if (init != null)
+            {
+                init.Init(this);
+                Object.DontDestroyOnLoad(holder);
+            }
         }
     }
     

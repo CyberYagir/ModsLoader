@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -11,4 +12,5 @@ public class ModDataObject : ScriptableObject
     public VersionData modVersionData;
     public ScriptData initializers = new ScriptData();
     public IconData iconData;
+    public List<GameObject> prefabs = new List<GameObject>();
 }

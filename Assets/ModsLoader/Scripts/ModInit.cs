@@ -7,7 +7,7 @@ public abstract class ModInit : MonoBehaviour
 {
     public Mod rootMod { get; private set; }
 
-    private void Init(Mod mod)
+    public void Init(Mod mod)
     {
         rootMod = mod;
     }
