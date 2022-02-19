@@ -32,6 +32,7 @@ public class Mod
         if (assembly != null)
         {
             AddLoader();
+            AddLoader();
         }
     }
     

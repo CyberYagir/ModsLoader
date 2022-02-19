@@ -39,6 +39,7 @@ public class ArchiveUtility
 
                     // Could also use the last write time or similar for the file.
                     entry.DateTime = DateTime.Now;
+                    entry.Flags |= (int)GeneralBitFlags.UnicodeText;
                     OutputStream.PutNextEntry(entry);
 
                     using (FileStream fs = File.OpenRead(file))
@@ -103,7 +104,6 @@ public class ArchiveUtility
                 // to remove the folder from the entry:- entryFileName = Path.GetFileName(entryFileName);
                 // Optionally match entrynames against a selection list here to skip as desired.
                 // The unpacked length is available in the zipEntry.Size property.
-
                 // 4K is optimum
                 byte[] buffer = new byte[4096];
                 Stream zipStream = file.GetInputStream(zipEntry);

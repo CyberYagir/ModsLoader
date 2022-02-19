@@ -4,16 +4,16 @@ using UnityEngine;
 [System.Serializable]
 public class ScriptData
 {
-    [SerializeField] private List<TextAsset> scripts = new List<TextAsset>();
+    public List<TextAsset> scripts = new List<TextAsset>();
     public List<string> namedScripts = new List<string>();
 
-    public void UpdateAll()
+    public void UpdateAll(List<string> classNames)
     {
         namedScripts = new List<string>();
-        foreach (var script in scripts)
+        foreach (var script in classNames)
         {
-            if (script != null && !namedScripts.Contains(script.name))
-                namedScripts.Add(script.name);
+            if (script != null && !namedScripts.Contains(script))
+                namedScripts.Add(script);
         }
     }
 }

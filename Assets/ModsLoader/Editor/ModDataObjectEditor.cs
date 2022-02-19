@@ -27,7 +27,7 @@ public class ModDataObjectEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        mod.modName = EditorGUILayout.TextField("Mod Name: ", mod.modName);
+        mod.modName = EditorGUILayout.TextField("Mod Name: ", mod.modName).Replace(" ", "");
         GUILayout.Space(10);
         EditorGUI.BeginChangeCheck();
         {
@@ -68,7 +68,14 @@ public class ModDataObjectEditor : Editor
         
         
         EditorGUILayout.PropertyField(serializedObject.FindProperty("initializers").FindPropertyRelative("scripts"), true);
-        mod.initializers.UpdateAll();
+
+        List<string> classNames = new List<string>();
+        for (int i = 0; i < mod.initializers.scripts.Count; i++)
+        {
+            classNames.Add((mod.initializers.scripts[i] as MonoScript).GetClass().FullName);
+        }
+        
+        mod.initializers.UpdateAll(classNames);
         GUILayout.Space(10);
 
 
@@ -90,17 +97,26 @@ public class ModDataObjectEditor : Editor
         }
         if (GUILayout.Button("Build Mod"))
         {
-            BuildSolution();
-            BundleCreatorEditor.ExportResource();
+            BuildMod(mod);
         }
         GUI.enabled = true;
     }
 
+    public static void BuildMod(ModDataObject mod, bool buildSolution = true)
+    {
+        Selection.activeObject = mod;
+        if (buildSolution)
+        {
+            BuildSolution();
+        }
+        BundleCreatorEditor.ExportResource();
+    }
+    
     public void CreateAssembly(string directory)
     {
         var name = mod.modName + "Assembly";
 
-        var json = "{\"name\":\"" + name + "\",\"rootNamespace\":\"\",\"references\":[\"ModsLoader\"],\"includePlatforms\":[],\"excludePlatforms\":[],\"allowUnsafeCode\":false,\"overrideReferences\":true,\"precompiledReferences\":[\"Mono.Cecil.dll\"],\"autoReferenced\":true,\"defineConstraints\":[],\"versionDefines\":[],\"noEngineReferences\":false}";
+        var json = "{\"name\":\"" + name + "\",\"rootNamespace\":\""+ mod.modName + "\",\"references\":[\"ModsLoader\"],\"includePlatforms\":[],\"excludePlatforms\":[],\"allowUnsafeCode\":false,\"overrideReferences\":true,\"precompiledReferences\":[\"Mono.Cecil.dll\"],\"autoReferenced\":true,\"defineConstraints\":[],\"versionDefines\":[],\"noEngineReferences\":false}";
         
         File.WriteAllText(directory + "/" + name + ".asmdef", json);
         AssetDatabase.Refresh();
@@ -126,17 +142,31 @@ public class ModDataObjectEditor : Editor
     }
 
 
-    public void BuildSolution()
+    public const string standardPath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\msbuild.exe";
+    public static void BuildSolution()
     {
         var solution = Application.dataPath + $"/../";
         var solitions = Directory.GetFiles(solution, "*.sln");
         if (solitions.Length != 0)
         {
             var findedSLN = Path.GetFullPath(solitions[0]);
-            var command = "/C \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\msbuild.exe\" ";
+
+            var path = standardPath;
+
+            if (EditorPrefs.HasKey(MSBuildPathWindow.pathKey))
+            {
+                path = EditorPrefs.GetString(MSBuildPathWindow.pathKey);
+            }
+            var command = "/C \""+path+"\" ";
+            if (!File.Exists(path))
+            {
+                Debug.LogError("ModLoader: MSBuild missing; Menu > Tool Configure > Set Build Path");
+                return;
+            }
+            
             var final = command + " " + findedSLN + "";
             Command(final);
-            Debug.Log(final);
+            Debug.Log("Console Command: " + final);
         }
         else
         {
@@ -144,16 +174,17 @@ public class ModDataObjectEditor : Editor
         }
     }
     
-    void Command (string input)
+    static void Command (string input)
     {
         var processInfo = new ProcessStartInfo("cmd.exe", input);
         processInfo.CreateNoWindow = false;
         processInfo.UseShellExecute = true;
  
         var process = Process.Start(processInfo);
+        
         process.WaitForExit();
         process.Close();
-        process.OutputDataReceived += (sender, args) => Debug.Log(args.Data); 
-        Debug.Log("Build Ended: ");
+        
+        Debug.Log("Build Ended");
     }
 }
