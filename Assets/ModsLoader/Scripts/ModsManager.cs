@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -34,5 +35,14 @@ public class ModsManager : MonoBehaviour
         
         modLoader = new ModsLoader();
         modLoader.Init(modsFolder, modsChainFolder, modAssemblyLoader);
+    }
+
+    private void OnApplicationQuit()
+    {
+        for (int i = 0; i < modLoader.mods.Count; i++)
+        {
+            modLoader.mods[i].bundle.Unload(true);
+            modLoader.mods[i].scenesBundle.Unload(true);
+        }
     }
 }

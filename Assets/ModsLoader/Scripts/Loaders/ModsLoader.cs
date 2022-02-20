@@ -76,6 +76,7 @@ public class ModsLoader
             
              if (File.Exists(modExPath))
              {
+                 Debug.Log(modName + " " + modExPath);
                  scenes = AssetBundle.LoadFromFile(modExPath);
              }
 
