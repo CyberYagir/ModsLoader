@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -48,6 +49,19 @@ public class Mod
         if (GetScenesCount == 0) return;
         id = Mathf.Clamp(id, 0, GetScenesCount);
         SceneManager.LoadScene(scenes[id]);
+    }
+
+    public void LoadSceneFromAsset(string assetNameWithoutModName)
+    {
+        var find = scenes.FindIndex(x => Path.GetFileNameWithoutExtension(x) == GetAssetName(assetNameWithoutModName) || x == assetNameWithoutModName);
+        if (find != -1)
+        {
+            SceneManager.LoadScene(scenes[find]);
+        }
+        else if (assetNameWithoutModName != "")
+        {
+            Debug.LogError($"ModLoader: Scene \"{assetNameWithoutModName}\" missing");
+        }
     }
 
     public Object GetAsset(string assetNameWithoutModName)

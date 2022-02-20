@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64f9770829c718499f0408a8a16a72e, type: 3}
+  m_Name: CanvasMod
+  m_EditorClassIdentifier: 
+  modName: CanvasMod
+  modDescription: 
+  modVersionData:
+    major: 2022
+    minor: 2
+    patch: 19
+  initializers:
+    scripts:
+    - {fileID: 11500000, guid: c529daacc7e4a9b4ab48be80b40f6d52, type: 3}
+    namedScripts:
+    - CanvasMod.CanvasModLoader
+  iconData:
+    textureRaw: 
+    size: {x: 0, y: 0}
+    textureFormat: 0
+  prefabs:
+  - {fileID: 1639419739759794899, guid: ff89df285075cf24080c3f2ff4d424dc, type: 3}
+  - {fileID: 1607551857370800100, guid: a62a793f64666f549a6e18fab0db8b12, type: 3}
