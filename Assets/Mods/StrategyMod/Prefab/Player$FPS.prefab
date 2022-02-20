@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 3913172702272148267}
   - component: {fileID: 8773177513680880744}
   m_Layer: 0
-  m_Name: Player$StategyMod
+  m_Name: Player$FPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

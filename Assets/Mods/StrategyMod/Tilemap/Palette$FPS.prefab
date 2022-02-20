@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 3220063668259557938}
   - component: {fileID: 7587444648818407715}
   m_Layer: 31
-  m_Name: Palette$StategyMod
+  m_Name: Palette$FPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

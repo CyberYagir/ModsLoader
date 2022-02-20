@@ -41,8 +41,8 @@ public class ModsManager : MonoBehaviour
     {
         for (int i = 0; i < modLoader.mods.Count; i++)
         {
-            modLoader.mods[i].bundle.Unload(true);
-            modLoader.mods[i].scenesBundle.Unload(true);
+            modLoader.mods[i].bundle?.Unload(true);
+            modLoader.mods[i].scenesBundle?.Unload(true);
         }
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4661193087785349769}
   - component: {fileID: 4661193087785349768}
   m_Layer: 0
-  m_Name: Smoke$StategyMod
+  m_Name: Smoke$FPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

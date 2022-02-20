@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StategyMod
+namespace FPS
 {
     public class Manager : MonoBehaviour
     {
@@ -20,14 +20,14 @@ namespace StategyMod
         {
             if (ModsManager.Instance != null)
             {
-                var cnvs = ModsManager.Instance.GetComponentInChildren<Canvas>();
+                var cnvs = ModsManager.Instance.GetComponentInChildren<Canvas>(true);
                 if (cnvs)
                 {
                     cnvs.gameObject.SetActive(state);
                 }
             }
         }
-        
+
         private void Start()
         {
             Application.targetFrameRate = 60;

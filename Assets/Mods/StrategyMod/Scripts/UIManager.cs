@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StategyMod
+namespace FPS
 {
     public class UIManager : MonoBehaviour
     {

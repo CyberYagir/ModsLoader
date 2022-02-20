@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8927082607777930655}
   - component: {fileID: 3805731372590019296}
   m_Layer: 0
-  m_Name: Mob$StategyMod
+  m_Name: Mob$FPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

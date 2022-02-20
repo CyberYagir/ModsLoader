@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace StategyMod
+namespace FPS
 {
     public class MobSpawn : MonoBehaviour
     {

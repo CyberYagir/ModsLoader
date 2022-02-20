@@ -108,6 +108,7 @@ public class BundleCreatorEditor : MonoBehaviour
 
         return selectedObject;
     }
+
     public static void CreateStreamingBundle(string path, string modFolder, ModDataObject mod)
     {
         Selection.activeObject = AssetDatabase.LoadAssetAtPath<Object>(modFolder);
@@ -121,8 +122,12 @@ public class BundleCreatorEditor : MonoBehaviour
             }
         }
 
-        BuildPipeline.BuildStreamedSceneAssetBundle(scenePaths.ToArray(), path + $"{mod.modName}.modEx", BuildTarget.StandaloneWindows);
+        if (scenePaths.Count != 0)
+        {
+            BuildPipeline.BuildStreamedSceneAssetBundle(scenePaths.ToArray(), path + $"{mod.modName}.modEx", BuildTarget.StandaloneWindows, BuildOptions.None);
+        }
     }
+
     public static void CreateArchiveFile(string filesFolder, ModDataObject mod)
     {
         var zipPath = filesFolder + $"/../{mod.modName}.modFile";

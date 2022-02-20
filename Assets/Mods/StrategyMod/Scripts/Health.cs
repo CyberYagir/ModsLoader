@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace StategyMod
+namespace FPS
 {
     public class Health : MonoBehaviour
     {

@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 3853516558243755269}
   - component: {fileID: 1303442338832631913}
   m_Layer: 0
-  m_Name: Bullet$StategyMod
+  m_Name: Bullet$FPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

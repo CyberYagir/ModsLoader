@@ -24,6 +24,14 @@ public class ModDataObjectEditor : Editor
         }
     }
 
+    private void OnDisable()
+    {
+        EditorUtility.SetDirty(mod);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        mod = null;
+    }
+
 
     public override void OnInspectorGUI()
     {
