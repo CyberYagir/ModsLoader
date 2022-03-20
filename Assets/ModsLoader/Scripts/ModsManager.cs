@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 
@@ -23,6 +24,13 @@ public class ModsManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         Init();
+    }
+
+    public void ReloadMods()
+    {
+        modLoader.UnloadBundles();
+        Process.Start(Application.dataPath + "/../" + Application.productName + ".exe"); 
+        Application.Quit();
     }
 
     public void Init()

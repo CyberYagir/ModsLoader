@@ -83,7 +83,18 @@ public class Mod
             }
         }
     }
-    
-    
-    
+
+
+    public void Unload()
+    {
+        if (bundle != null)
+        {
+            bundle.Unload(true);
+        }
+
+        if (scenesBundle != null)
+        {
+            scenesBundle.Unload(true);
+        }
+    }
 }

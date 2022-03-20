@@ -22,7 +22,7 @@ public class ModsLoader
 
         loader.Init(unpackPath);
 
-        mods = GetAssetBundles(unpackedFolder, loader);
+        mods = GetAssetBundles(unpackedFolder, loader, loadChain);
 
         UnloadMods(unpackPath);
     }
@@ -49,49 +49,73 @@ public class ModsLoader
         Directory.Delete(unpackPath, true);
     }
 
+    public void UnloadBundles()
+    {
+        foreach (var mod in mods)
+        {
+            mod.Unload();
+        }
+    }
+
     public List<string> GetModsList(string modsFolder)
     {
         var mods = Directory.GetFiles(modsFolder, "*.modFile", SearchOption.AllDirectories).ToList();
         return mods;
     }
-    public List<Mod> GetAssetBundles(List<string> paths, ModAssemblyLoader assemblyLoader)
+
+    public List<Mod> GetAssetBundles(List<string> paths, ModAssemblyLoader assemblyLoader, ModsLoaderChain chain)
     {
         List<Mod> mods = new List<Mod>();
-        for (int i = 0; i < paths.Count; i++)
+
+        var chainPaths = new List<string>();
+        for (int i = 0; i < chain.mods.Count; i++)
         {
-            var modName = Path.GetFileNameWithoutExtension(paths[i]);
-            var modFile = paths[i] + "/" + modName;
+            for (int j = 0; j < paths.Count; j++)
+            {
+                if (Path.GetFileNameWithoutExtension(chain.mods[i]) == Path.GetFileNameWithoutExtension(paths[j]))
+                {
+                    chainPaths.Add(paths[j]);
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < chainPaths.Count; i++)
+        {
+            var modName = Path.GetFileNameWithoutExtension(chainPaths[i]);
+            var modFile = chainPaths[i] + "/" + modName;
 
 
             var modPath = modFile + ".mod";
             var modExPath = modFile + ".modEx";
-            
-            
-             AssetBundle asset = null, scenes = null;
 
-             if (File.Exists(modPath))
-             {
-                 asset = AssetBundle.LoadFromFile(modPath);
-             }
-            
-             if (File.Exists(modExPath))
-             {
-                 Debug.Log(modName + " " + modExPath);
-                 scenes = AssetBundle.LoadFromFile(modExPath);
-             }
 
-             Assembly currentDll = null;
-             if (assemblyLoader.loadedAssembles.ContainsKey(modName))
-             {
-                 currentDll = assemblyLoader.loadedAssembles[modName];
-             }
-             
-             var mod = new Mod(asset, scenes, currentDll);
-            
-             mods.Add(mod);   
+            AssetBundle asset = null, scenes = null;
+
+            if (File.Exists(modPath))
+            {
+                asset = AssetBundle.LoadFromFile(modPath);
+            }
+
+            if (File.Exists(modExPath))
+            {
+                scenes = AssetBundle.LoadFromFile(modExPath);
+            }
+
+            Assembly currentDll = null;
+            if (assemblyLoader.loadedAssembles.ContainsKey(modName))
+            {
+                currentDll = assemblyLoader.loadedAssembles[modName];
+            }
+
+            var mod = new Mod(asset, scenes, currentDll);
+
+            mods.Add(mod);
         }
+
         return mods;
     }
+
     public ModsLoaderChain InitChain(List<string> mods, ModsLoaderChain chain, string modsChainFolder)
     {
         if (chain == null)
@@ -103,6 +127,14 @@ public class ModsLoader
         }
         else
         {
+            var oldMods = chain.mods;
+            for (int i = 0; i < oldMods.Count; i++)
+            {
+                if (!File.Exists(oldMods[i]))
+                {
+                    chain.mods.Remove(oldMods[i]);
+                }
+            }
             for (int i = 0; i < mods.Count; i++)
             {
                 if (!chain.mods.Contains(mods[i]))

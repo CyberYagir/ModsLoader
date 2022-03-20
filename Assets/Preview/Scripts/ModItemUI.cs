@@ -20,7 +20,7 @@ public class ModItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     }
     public void SetData(Mod mod)
     {
-        if (mod.data == null){Destroy(gameObject); return;}
+        if (mod == null || mod.data == null){Destroy(gameObject); return;}
         startColor = image.color;
         overedColor = (startColor / 1.2f) + new Color(0, 0, 0, 1);
         modName.text = mod.data.modName;
@@ -65,5 +65,14 @@ public class ModItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public void OnPointerClick(PointerEventData eventData)
     {
         mod.LoadSceneFromAsset(0);
+    }
+
+    public void MoveUp()
+    {
+        ModsManager.Instance.modLoader.loadChain.MoveModUp(mod.data.modName);
+    }
+    public void MoveDown()
+    {
+        ModsManager.Instance.modLoader.loadChain.MoveModDown(mod.data.modName);
     }
 }
