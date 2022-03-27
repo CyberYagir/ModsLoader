@@ -4,9 +4,15 @@ using UnityEngine;
 [System.Serializable]
 public class ScriptData
 {
-    public List<TextAsset> scripts = new List<TextAsset>();
-    public List<string> namedScripts = new List<string>();
+    public List<TextAsset> scripts;
+    public List<string> namedScripts;
 
+    public ScriptData()
+    {
+        scripts = new List<TextAsset>();
+        namedScripts = new List<string>();
+    }
+    
     public void UpdateAll(List<string> classNames)
     {
         namedScripts = new List<string>();

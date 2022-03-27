@@ -8,7 +8,7 @@ public class ModDataObject : ScriptableObject
 {
     public string modName;
     [TextArea]
-    public string modDescription;
+    public string modDescription = "";
     public VersionData modVersionData;
     public ScriptData initializers = new ScriptData();
     public IconData iconData;

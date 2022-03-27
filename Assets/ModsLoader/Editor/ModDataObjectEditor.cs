@@ -15,10 +15,14 @@ public class ModDataObjectEditor : Editor
 {
     private ModDataObject mod;
     private Texture2D currentIcon;
+
+    private string pathToMod, directory;
+    private bool isHaveAssembly;
+
     private void OnEnable()
     {
         mod = target as ModDataObject;
-        if (currentIcon == null)
+        if (mod != null && currentIcon == null && mod.iconData != null)
         {
             currentIcon = mod.iconData.GetTexture();
         }
@@ -32,11 +36,22 @@ public class ModDataObjectEditor : Editor
         mod = null;
     }
 
-
-    public override void OnInspectorGUI()
+    public void SetName()
     {
-        mod.modName = EditorGUILayout.TextField("Mod Name: ", mod.modName).Replace(" ", "");
+        if (mod.modName == null)
+        {
+            mod.modName = mod.name;
+        }
+        else
+        {
+            mod.modName = EditorGUILayout.TextField("Mod Name: ", mod.modName).Replace(" ", "");
+        }
+
         GUILayout.Space(10);
+    }
+
+    public void GetIcon()
+    {
         EditorGUI.BeginChangeCheck();
         {
             currentIcon = (Texture2D) EditorGUILayout.ObjectField("Mod Icon: ", currentIcon, typeof(Texture2D));
@@ -47,19 +62,23 @@ public class ModDataObjectEditor : Editor
             {
                 mod.iconData.textureRaw = currentIcon.GetRawTextureData();
                 mod.iconData.size = new Vector2Int(currentIcon.width, currentIcon.height);
-                mod.iconData.textureFormat = (int)currentIcon.format;
+                mod.iconData.textureFormat = (int) currentIcon.format;
             }
             else
             {
                 mod.iconData.textureRaw = new byte[0];
             }
         }
+    }
 
-        
+    public void SetDescription()
+    {
         GUILayout.Label(mod.modName + " Description:");
         mod.modDescription = EditorGUILayout.TextArea(mod.modDescription, GUILayout.MinHeight(EditorGUIUtility.singleLineHeight * 5));
-        
-        GUILayout.Space(10);
+    }
+
+    public void SetVersion()
+    {
         GUILayout.Label(mod.modName + " Version: " + mod.modVersionData.ToString('.'));
         mod.modVersionData.SetStartDate();
         GUILayout.BeginHorizontal();
@@ -69,46 +88,92 @@ public class ModDataObjectEditor : Editor
             mod.modVersionData.patch = EditorGUILayout.IntField(mod.modVersionData.patch);
             mod.modVersionData.CheckFormatting();
         }
-        
+
         GUILayout.EndHorizontal();
-        
-        GUILayout.Space(10);
-        
-        
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("initializers").FindPropertyRelative("scripts"), true);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("prefabs"), true);
 
-        List<string> classNames = new List<string>();
-        for (int i = 0; i < mod.initializers.scripts.Count; i++)
+    }
+
+    public void Init()
+    {
+        pathToMod = AssetDatabase.GetAssetPath(mod);
+        directory = Path.GetDirectoryName(pathToMod);
+        isHaveAssembly = !CheckAssembly(directory);
+    }
+
+    public void SetScripts()
+    {
+        if (!string.IsNullOrEmpty(directory) && !isHaveAssembly)
         {
-            classNames.Add((mod.initializers.scripts[i] as MonoScript).GetClass().FullName);
+            if (mod.initializers == null)
+            {
+                mod.initializers = new ScriptData();
+            }
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("initializers").FindPropertyRelative("scripts"), true);
+            List<string> classNames = new List<string>();
+
+
+            for (int i = 0; i < mod.initializers.scripts.Count; i++)
+            {
+                classNames.Add(GetClassName(mod.initializers.scripts[i] as MonoScript));
+            }
+
+            mod.initializers.UpdateAll(classNames);
         }
-        
-        mod.initializers.UpdateAll(classNames);
-        GUILayout.Space(10);
+    }
+    
+    string GetClassName(MonoScript aScript)
+    {
+        var type = aScript.GetClass();
+        if (type == null)
+        {
+            return mod.modName + "." + aScript.name;
+        }
+        else
+        {
+           return  type.FullName;
+        }
+    }
 
-
-        var pathToMod = AssetDatabase.GetAssetPath(mod);
-        var directory = Path.GetDirectoryName(pathToMod);
-        
-        var isHaveAssembly = !CheckAssembly(directory);
+    public void DrawButtons()
+    {
         GUI.enabled = isHaveAssembly;
         var createAssemblyButton = GUILayout.Button("Create Assembly");
         if (createAssemblyButton)
         {
             CreateAssembly(directory);
         }
-        
+
         GUI.enabled = !isHaveAssembly;
         if (GUILayout.Button("Build Assembly"))
         {
             BuildSolution();
         }
+
         if (GUILayout.Button("Build Mod"))
         {
             BuildMod(mod);
         }
+
         GUI.enabled = true;
+    }
+
+    public override void OnInspectorGUI()
+    {
+        if (mod != null)
+        {
+            Init();
+            SetName();
+            GetIcon();
+            SetDescription();
+            GUILayout.Space(10);
+            SetVersion();
+            GUILayout.Space(10);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("prefabs"), true);
+            SetScripts();
+            GUILayout.Space(10);
+            DrawButtons();
+        }
     }
 
     public static void BuildMod(ModDataObject mod, bool buildSolution = true)
@@ -118,9 +183,10 @@ public class ModDataObjectEditor : Editor
         {
             BuildSolution();
         }
+
         BundleCreatorEditor.ExportResource();
     }
-    
+
     public void CreateAssembly(string directory)
     {
         var name = mod.modName + "Assembly";
