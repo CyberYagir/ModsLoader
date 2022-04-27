@@ -54,7 +54,7 @@ public class ModDataObjectEditor : Editor
     {
         EditorGUI.BeginChangeCheck();
         {
-            currentIcon = (Texture2D) EditorGUILayout.ObjectField("Mod Icon: ", currentIcon, typeof(Texture2D));
+            currentIcon = (Texture2D) EditorGUILayout.ObjectField("Mod Icon: ", currentIcon, typeof(Texture2D), allowSceneObjects: false);
         }
         if (EditorGUI.EndChangeCheck())
         {
@@ -96,8 +96,11 @@ public class ModDataObjectEditor : Editor
     public void Init()
     {
         pathToMod = AssetDatabase.GetAssetPath(mod);
-        directory = Path.GetDirectoryName(pathToMod);
-        isHaveAssembly = !CheckAssembly(directory);
+        if (pathToMod != "")
+        {
+            directory = Path.GetDirectoryName(pathToMod);
+            isHaveAssembly = !CheckAssembly(directory);
+        }
     }
 
     public void SetScripts()
@@ -112,10 +115,16 @@ public class ModDataObjectEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("initializers").FindPropertyRelative("scripts"), true);
             List<string> classNames = new List<string>();
 
-
-            for (int i = 0; i < mod.initializers.scripts.Count; i++)
+            if (mod.initializers != null)
             {
-                classNames.Add(GetClassName(mod.initializers.scripts[i] as MonoScript));
+                for (int i = 0; i < mod.initializers.scripts.Count; i++)
+                {
+                    classNames.Add(GetClassName(mod.initializers.scripts[i] as MonoScript));
+                }
+            }
+            else
+            {
+                mod.initializers = new ScriptData();
             }
 
             mod.initializers.UpdateAll(classNames);

@@ -75,7 +75,7 @@ public class MSBuildPathWindow : EditorWindow
         {
             for (int i = 0; i < modsFiles.Count; i++)
             {
-                modsFiles[i] = EditorGUILayout.ObjectField((modsFiles[i] as ModDataObject).modName, modsFiles[i], typeof(ModDataObject));
+                modsFiles[i] = EditorGUILayout.ObjectField((modsFiles[i] as ModDataObject)?.modName, modsFiles[i], typeof(ModDataObject), allowSceneObjects: false);
             }
 
             GUI.enabled = true;

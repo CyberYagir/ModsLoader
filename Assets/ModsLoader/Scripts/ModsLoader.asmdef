@@ -5,7 +5,7 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [
         "Unity.Plastic.Newtonsoft.Json.dll",
         "Mono.Cecil.dll",
