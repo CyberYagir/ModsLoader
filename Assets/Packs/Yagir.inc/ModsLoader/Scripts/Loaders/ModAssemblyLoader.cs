@@ -13,7 +13,7 @@ public class ModAssemblyLoader
     public Dictionary<string, Assembly> Init(string modsFolder)
     {
         var allDlls = FindDlls(modsFolder);
-        CheckAssembly(allDlls);
+        allDlls = CheckAssembly(allDlls);
         LoadAssemblies(allDlls);
         return loadedAssembles;
     }
@@ -42,21 +42,34 @@ public class ModAssemblyLoader
         return Directory.GetFiles(modsFolder, "*.dll", SearchOption.AllDirectories).ToList();
     }
 
-    public void CheckAssembly(List<string> dllPaths)
+    public List<string> CheckAssembly(List<string> dllPaths)
     {
+        List<string> notAssembly = new List<string>();
         for (int i = 0; i < dllPaths.Count; i++)
         {
             AssemblyDefinition assemblyDefinition = null;
             try
             {
                 assemblyDefinition = Mono.Cecil.AssemblyDefinition.ReadAssembly(dllPaths[i]);
+#if UNITY_EDITOR
                 Debug.LogWarning(Path.GetFileName(dllPaths[i]) + " loaded");
+#endif
             }
             catch (Exception e)
             {
+                notAssembly.Add(dllPaths[i]);
+#if UNITY_EDITOR
                 Debug.LogWarning(Path.GetFileName(dllPaths[i]) + " have error");
+#endif
                 continue;
             }
         }
+
+        for (int i = 0; i < notAssembly.Count; i++)
+        {
+            dllPaths.Remove(notAssembly[i]);
+        }
+
+        return dllPaths;
     }
 }

@@ -4,13 +4,32 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+/// <summary>
+/// This class collects a list of mods, unzips the mods into mod folders, then loads the mods in the order chosen by the player. After that, it creates mod objects and remembers them.
+/// </summary>
 public class ModsLoader
 {
-    public List<string> modArchives { get; private set; }
+    /// <summary>
+    /// List of mods Paths
+    /// </summary>
+    public List<string> modArchives { get; private set; } 
+    
+    /// <summary>
+    /// User mods load queue
+    /// </summary>
     public ModsLoaderChain loadChain  { get; private set; } = new ModsLoaderChain();
 
+    /// <summary>
+    /// List of loaded mods
+    /// </summary>
     public List<Mod> mods { get; private set; } = new List<Mod>();
 
+    /// <summary>
+    /// Initialization unpacks mods and converts their files to Mod
+    /// </summary>
+    /// <param name="modsFolder"></param>
+    /// <param name="modsChainFolder"></param>
+    /// <param name="loader">Mod Assembly Loader</param>
     public void Init(string modsFolder, string modsChainFolder, ModAssemblyLoader loader)
     {
         var unpackPath = modsFolder + "/Unpacked/";
