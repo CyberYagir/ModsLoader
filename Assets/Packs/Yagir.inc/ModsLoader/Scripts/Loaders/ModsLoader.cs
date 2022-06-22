@@ -62,12 +62,12 @@ public class ModsLoader
 
         return unpackedDirectories;
     }
-
+    
     public void UnloadMods(string unpackPath)
     {
         Directory.Delete(unpackPath, true);
     }
-
+    
     public void UnloadBundles()
     {
         foreach (var mod in mods)
@@ -76,12 +76,24 @@ public class ModsLoader
         }
     }
 
+    /// <summary>
+    /// Get Paths of mods files
+    /// </summary>
+    /// <param name="modsFolder"></param>
+    /// <returns></returns>
     public List<string> GetModsList(string modsFolder)
     {
         var mods = Directory.GetFiles(modsFolder, "*.modFile", SearchOption.AllDirectories).ToList();
         return mods;
     }
 
+    /// <summary>
+    /// Create Mods objects
+    /// </summary>
+    /// <param name="paths"></param>
+    /// <param name="assemblyLoader"></param>
+    /// <param name="chain"></param>
+    /// <returns></returns>
     public List<Mod> GetAssetBundles(List<string> paths, ModAssemblyLoader assemblyLoader, ModsLoaderChain chain)
     {
         List<Mod> mods = new List<Mod>();
@@ -135,6 +147,13 @@ public class ModsLoader
         return mods;
     }
 
+    /// <summary>
+    /// Creates mod load chain
+    /// </summary>
+    /// <param name="mods"></param>
+    /// <param name="chain"></param>
+    /// <param name="modsChainFolder"></param>
+    /// <returns></returns>
     public ModsLoaderChain InitChain(List<string> mods, ModsLoaderChain chain, string modsChainFolder)
     {
         if (chain == null)
