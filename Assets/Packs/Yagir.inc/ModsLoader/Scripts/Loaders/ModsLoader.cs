@@ -139,6 +139,7 @@ public class ModsLoader
                 currentDll = assemblyLoader.loadedAssembles[modName];
             }
 
+            if (currentDll == null && asset == null && scenes == null) continue; //Not A mod
             var mod = new Mod(asset, scenes, currentDll);
 
             mods.Add(mod);
